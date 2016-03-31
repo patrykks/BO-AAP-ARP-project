@@ -38,6 +38,9 @@ public class Ant {
         Edge lastEdge = null;
         boolean findNode = false;
         while(!toVisitAirplanes.isEmpty()) {
+            //System.out.println(toVisitAirplanes.size());
+            //System.out.println(toVisitAirplanes);
+            //System.out.println(actualSolution);
             findNode = false;
             lastEdge = null;
             for (Edge edge : aco.getEdges()) {
@@ -79,6 +82,16 @@ public class Ant {
                         }
                     }
                 }
+            }
+            if (!findNode) {
+                airplane = (AirPlane)lastEdge.getNodeEnd();
+                if (!visitedAirplanes.contains(airplane)) {
+                    lastNode = airplane;
+                    actualSolution.addEdge(lastEdge);
+                    visitedAirplanes.add(airplane);
+                    toVisitAirplanes.remove(airplane);
+                }
+
             }
 
         }
