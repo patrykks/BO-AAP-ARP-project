@@ -155,7 +155,7 @@ public class Ant {
             if (Flight.class.isInstance(start) && Flight.class.isInstance(end)) {
                 Flight endFlight = (Flight) end;
                 double flightTime = endFlight.getDistance() / airPlane.getVelocity();
-                date = new Date(date.getTime() + (long)flightTime * HOUR + 1);
+                date = new Date(Long.max(date.getTime() + (long)flightTime * HOUR + 1,((Flight) end).getPlannedDepTIme().getTime() ));
                 endFlight.setRealdDepTIme(date);
             }
             if (Flight.class.isInstance(start) && AirPlane.class.isInstance(end)) {
