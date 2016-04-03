@@ -4,6 +4,7 @@ import generators.AirPortGenerator;
 import model.AirPort;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created by patrykks on 28/03/16.
@@ -27,6 +28,12 @@ public class AirportService {
         airports = new ArrayList<AirPort>();
         AirPortGenerator airPortGenerator = new AirPortGenerator();
         airports.addAll(airPortGenerator.load());
+    }
+
+    public AirPort getRandomAirport() {
+        int size = airports.size();
+        int random = new Random().nextInt(size);
+        return airports.get(random);
     }
 
     public AirPort getByID(int id) {

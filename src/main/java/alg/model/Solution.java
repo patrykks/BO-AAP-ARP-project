@@ -42,13 +42,10 @@ public class Solution  {
             if (!isSolutionContainsFlight(flight)){
                 costofFlightCancel = flight.getCancelledFlightPenalty();
             } else {
-                //System.out.print("Solution in evaluate solution" + edges);
                 AirPlane airplane = findAirplaneForFlight(flight);
-                //System.out.println("Plane: " + airplane);
                 costOfAssignmentPlaneToFlight = airplane.getRentCost();
                 double flightDuration = flight.getDistance() / airplane.getVelocity();
                 costOfFlight = flightDuration * airplane.getCostOfUnitOfTime();
-                //System.out.println("Before runtime expetcion real departure:" + flight +" :" + edges);
                 if (flight.getRealdDepTIme() == null)
                     throw new RuntimeException("Real Departure Date should not be null");
                 long diff = flight.getRealdDepTIme().getTime() - flight.getPlannedDepTIme().getTime();
@@ -84,7 +81,6 @@ public class Solution  {
             if (nodeStart.equals(flight) || nodeEnd.equals(flight))
                 return edges.indexOf(edge);
         }
-        //System.out.println(flight);
         throw new RuntimeException("Didnt found flight in edges in solution, but it shoul be fonund");
     }
 

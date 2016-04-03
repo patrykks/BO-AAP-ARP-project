@@ -23,14 +23,15 @@ public class AirplaneGenerator {
         BufferedReader br = getFile();;
         try {
             String line;
+            skipDescriptionLine(br);
             while ((line = br.readLine()) != null) {
-
                 String[] airplane = line.split(",");
                 String id = airplane[0];
-                String name = airplane[2];
-                int airportId = Integer.parseInt(airplane[7]);
-                int capacity = Integer.parseInt(airplane[3].substring(airplane[3].length() - 3));
+                String name = airplane[1];
+                int airportId = Integer.parseInt(airplane[3]);
+                int capacity = Integer.parseInt(airplane[2].substring(airplane[2].length() - 3));
                 AirPort base = AirportService.getInstance().getByID(airportId);
+                //AirPort base = AirportService.getInstance().getRandomAirport();
                 int velocity = (int) (450 - Math.random() * capacity);
                 int rentCost = (int) (Math.random()*capacity*1000);
                 int costOfUnitOfTime = (int) (Math.random()*capacity*100);
@@ -60,5 +61,13 @@ public class AirplaneGenerator {
         int i = rn.nextInt() % n;
         int randomNum =  minimum + i;
         return  randomNum;
+    }
+
+    private void skipDescriptionLine(BufferedReader br) {
+        try {
+            br.readLine();
+        } catch (IOException e) {
+            throw new RuntimeException("Error in skiping description line in AirplaneGenerator");
+        }
     }
 }

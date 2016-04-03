@@ -1,12 +1,13 @@
-1,"Lech Walesa","Gdansk","Poland","GDN","EPGD",54.377569,18.466222,489,1,"E","Europe/Warsaw"
-2,"Balice","Krakow","Poland","KRK","EPKK",50.077731,19.784836,791,1,"E","Europe/Warsaw"
-3,"Muchowiec","Katowice","Poland","","EPKM",50.238147,19.034181,909,1,"E","Europe/Warsaw"
-4,"Pyrzowice","Katowice","Poland","KTW","EPKT",50.474253,19.080019,995,1,"E","Europe/Warsaw"
-5,"Mielec","Mielec","Poland","","EPML",50.322275,21.462131,548,1,"E","Europe/Warsaw"
-6,"Lawica","Poznan","Poland","POZ","EPPO",52.421031,16.826325,308,1,"E","Europe/Warsaw"
-7,"Jasionka","Rzeszow","Poland","RZE","EPRZ",50.109958,22.019,675,1,"E","Europe/Warsaw"
-8,"Goleniow","Szczecin","Poland","SZZ","EPSC",53.584731,14.902206,154,1,"E","Europe/Warsaw"
-9,"Redzikowo","Slupsk","Poland","OSP","EPSK",54.478889,17.1075,217,1,"E","Europe/Warsaw"
-10,"Swidwin","Shapaja","Poland","","EPSN",53.790639,15.82625,385,1,"E","Europe/Warsaw"
-11,"Okecie","Warsaw","Poland","WAW","EPWA",52.16575,20.967122,362,1,"E","Europe/Warsaw"
-12,"Strachowice","Wroclaw","Poland","WRO","EPWR",51.102683,16.885836,404,1,"E","Europe/Warsaw
+AirportId,IATA,ICAO,Latitude,Longitude
+1,GDN,EPGD,54.377569,18.466222
+2,KRK,EPKK,50.077731,19.784836
+3,,EPKM,50.238147,19.034181
+4,KTW,EPKT,50.474253,19.080019
+5,,EPML,50.322275,21.462131
+6,POZ,EPPO,52.421031,16.826325
+7,RZE,EPRZ,50.109958,22.019
+8,SZZ,EPSC,53.584731,14.902206
+9,OSP,EPSK,54.478889,17.1075
+10,,EPSN,53.790639,15.82625
+11,WAW,EPWA,52.16575,20.967122
+12,WRO,EPWR,51.102683,16.885836

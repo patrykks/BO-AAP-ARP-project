@@ -26,13 +26,17 @@ public class FlightGenerator {
         int i = 0;
         try {
             String line;
+            skipDescriptionLine(br);
             while ((line = br.readLine()) != null && i < size) {
-
                 String[] flight = line.split(",");
-                int sourceAirportID = Integer.parseInt(flight[3]);
-                int destinationAirportID = Integer.parseInt(flight[5]);
+                int sourceAirportID = Integer.parseInt(flight[0]);
+                int destinationAirportID = Integer.parseInt(flight[1]);
                 AirPort startAirport = AirportService.getInstance().getByID(sourceAirportID);
                 AirPort endAirport = AirportService.getInstance().getByID(destinationAirportID);
+                if (startAirport == null)
+                    throw new RuntimeException("There is no airport with id:" + flight[0] + "in airport databse");
+                if (endAirport == null)
+                    throw new RuntimeException("There is no airport with id:" + flight[1] + "in airport databse");
 
                 Date plannedDepTIme = RandomDateGenerator.generateRandomDate();
                 int numbuerOfPassnger = randInt(10,213);
@@ -65,5 +69,13 @@ public class FlightGenerator {
         int i = Math.abs(rn.nextInt() % n);
         int randomNum =  minimum + i;
         return  randomNum;
+    }
+
+    private void skipDescriptionLine(BufferedReader br) {
+        try {
+            br.readLine();
+        } catch (IOException e) {
+            throw new RuntimeException("Error in skiping description line in FlightGenerator");
+        }
     }
 }

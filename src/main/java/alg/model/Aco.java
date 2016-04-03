@@ -33,7 +33,7 @@ public class Aco {
     public void solve() {
         while (true) {
             System.out.println("Actual min cost" + minCost);
-            System.out.println(bestSolution);
+            //System.out.println(bestSolution);
             for (Ant ant : ants) {
                 Solution solution = ant.findSolution();
                 double solutionCost = solution.evaluateSolutionCost();

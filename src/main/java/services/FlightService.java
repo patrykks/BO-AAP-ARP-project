@@ -12,7 +12,7 @@ import java.util.List;
 public class FlightService {
     private static FlightService instance;
     private List<Flight> flights;
-    private final int SIZE = 1000;
+    private final int SIZE = 30000;
     private FlightService(){
         initialize();
     }

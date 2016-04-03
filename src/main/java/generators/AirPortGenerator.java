@@ -21,14 +21,15 @@ public class AirPortGenerator {
         BufferedReader br = getFile();
         try {
             String line;
+            skipDescriptionLine(br);
             while ((line = br.readLine()) != null) {
 
                 String[] airport = line.split(",");
                 int id = Integer.parseInt(airport[0]);
-                String IATA = airport[4];
-                String ICAO = airport[5];
-                double latitude = Double.parseDouble(airport[6]);
-                double longitude = Double.parseDouble(airport[7]);
+                String IATA = airport[1];
+                String ICAO = airport[2];
+                double latitude = Double.parseDouble(airport[3]);
+                double longitude = Double.parseDouble(airport[4]);
                 airports.add(new AirPort(id, IATA, ICAO, latitude, longitude));
             }
 
@@ -48,5 +49,12 @@ public class AirPortGenerator {
         return airports;
     }
 
+    private void skipDescriptionLine(BufferedReader br) {
+        try {
+            br.readLine();
+        } catch (IOException e) {
+            throw new RuntimeException("Error in skiping description line in AirportGenerator");
+        }
+    }
 
 }

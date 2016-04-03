@@ -36,12 +36,6 @@ public class Ant {
         Edge lastEdge = null;
         boolean findNode = false;
         while(!toVisitAirplanes.isEmpty()) {
-            //System.out.println("Visited: " + visitedAirplanes);
-            //System.out.println("ToVisit: " + toVisitAirplanes);
-            //System.out.println(toVisitAirplanes.size());
-            //System.out.println(lastEdge);
-            //System.out.println(toVisitAirplanes);
-            //System.out.println(actualSolution);
             findNode = false;
             lastEdge = null;
             for (Edge edge : aco.getEdges(lastNode)) {
@@ -67,9 +61,7 @@ public class Ant {
                     if (edge.getNodeStart().equals(lastNode)) {
                         if (AirPlane.class.isInstance(edge.getNodeEnd())) {
                             airplane = (AirPlane) edge.getNodeEnd();
-                            //System.out.println(airplane);
                             if (!visitedAirplanes.contains(airplane)) {
-                                //System.out.println(edge);
                                 lastEdge = edge;
                                 double pheromoneValueForEdge =  aco.getPheromoneValue(edge)/aco.getPhoromesSumValue(lastNode);
                                 if (Double.compare(Math.random(), pheromoneValueForEdge ) < 0) {
