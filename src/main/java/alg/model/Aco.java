@@ -13,39 +13,35 @@ import java.util.*;
  * Created by patrykks on 28/03/16.
  */
 public class Aco {
+    private static final double ACO_CONSTANCE = ConfigReader.getInstance().getAcoConstance();
     private static final double EVAPORATION_COEFFICIENT = ConfigReader.getInstance().getEvaporationCoefficient();
     private double minCost = Double.POSITIVE_INFINITY;
     private List<Ant> ants;
     private Solution bestSolution = null;
-    private Map<Edge,Double> pheromonMap;
+    private Map <Node, NodeNeighborhood> neighborhoodMap;
 
 
     public Aco(int antsNumber) {
-        pheromonMap = new HashMap<Edge,Double>();
+        neighborhoodMap = new HashMap<Node, NodeNeighborhood>();
         initializeEgdeMap();
         ants = new ArrayList<>(antsNumber);
         for (int i = 0; i < antsNumber; i++) {
             ants.add(new Ant(this));
         }
-
     }
 
     public void solve() {
         while (true) {
+            System.out.println("Actual min cost" + minCost);
+            System.out.println(bestSolution);
             for (Ant ant : ants) {
-                ant.findSolution();
-                Solution solution = ant.getSolution();
-                double solutionCost = ant.evaluateSolutionCost();
-                System.out.println("solution " + solutionCost);
-                System.out.println(solution);
-                System.out.println("Actual min cost" + minCost);
-                System.out.println(bestSolution);
+                Solution solution = ant.findSolution();
+                double solutionCost = solution.evaluateSolutionCost();
                 if (Double.compare(solutionCost, minCost) < 0) {
-                    //System.out.println(solution);
                     minCost = solutionCost;
                     bestSolution = solution.cloneSolution();
                 }
-                ant.updatePheromones();
+                updatePheromones(solution, solutionCost);
                 ant.clearSolution();
             }
             doEvaporation();
@@ -53,64 +49,120 @@ public class Aco {
     }
 
     private void doEvaporation() {
-        for (Map.Entry<Edge, Double> entry : pheromonMap.entrySet()) {
-            pheromonMap.put(entry.getKey(), Math.max(entry.getValue()*EVAPORATION_COEFFICIENT, 1));
+        for (NodeNeighborhood neighborhood : neighborhoodMap.values()) {
+            for (Map.Entry<Edge, Double> entry : neighborhood.getEntry()) {
+                neighborhood.put(entry.getKey(), Math.max(entry.getValue()*EVAPORATION_COEFFICIENT, 1) );
+            }
         }
     }
 
     public double getPheromoneValue(Edge edge) {
-            return pheromonMap.get(edge);
+            return neighborhoodMap.get(edge.getNodeStart()).get(edge);
     }
 
-    public Set<Edge> getEdges() {
-        return pheromonMap.keySet();
+    public Set<Edge> getEdges(Node node) {
+        return neighborhoodMap.get(node).getEdges();
+    }
+
+    public Set<Edge> getAllEdges() {
+        Set<Edge> edgeSet = new HashSet<Edge>();
+        for (NodeNeighborhood neighborhood : neighborhoodMap.values()) {
+            edgeSet.addAll(neighborhood.getEdges());
+        }
+        return edgeSet;
     }
 
     public double getPhoromesSumValue(Node node) {
         double sum = 0.0;
-        for (Map.Entry<Edge, Double> entry : pheromonMap.entrySet()) {
-            if(entry.getKey().getNodeStart().equals(node))
-                sum += entry.getValue();
+        for (Double value : neighborhoodMap.get(node).values()) {
+            sum += value;
         }
         return sum;
     }
 
-
     public void updateEdgePheromon(Edge edge,double value) {
-        pheromonMap.put(edge, value);
+        neighborhoodMap.get(edge.getNodeStart()).put(edge, value);
+    }
+
+    public void updatePheromones(Solution antSolution, double solutionCost) {
+        for (Edge edge : antSolution.getEdges()) {
+            updateEdgePheromon(edge, ACO_CONSTANCE / solutionCost);
+        }
     }
 
     private void initializeEgdeMap() {
+        addAirplaneToAirplaneEdges();
+        addFlightToAirplaneEdges();
+        addAirplaneToFlightEdges();
+        addFlightToFlightEdges();
+
+    }
+
+    private void addAirplaneToAirplaneEdges() {
         for (AirPlane endAirplane : AirplaneService.getInstance().getAllAirplanes()) {
             Node end = endAirplane;
             for (AirPlane startAirplane : AirplaneService.getInstance().getAllAirplanes()) {
                 Node start = startAirplane;
                 if (!start.equals(end)){
-                    pheromonMap.put(new Edge(start, end),1.0);
+                    NodeNeighborhood neighborhood= neighborhoodMap.get(start);
+                    if (neighborhood == null) {
+                        neighborhood = new NodeNeighborhood(start);
+                        neighborhoodMap.put(start, neighborhood);
+                    }
+                    neighborhood.put(new Edge(start, end),1.0);
+
                 }
-            }
-
-            for (Flight flight : FlightService.getInstance().getAllFlights()) {
-                Node start = flight;
-                pheromonMap.put(new Edge(start, end),1.0);
-            }
-        }
-
-        for (AirPlane airplane : AirplaneService.getInstance().getAllAirplanes()) {
-            for (Flight flight : FlightService.getInstance().getAllFlights()) {
-                ;if (flight.getNumbuerOfPassnger() <= airplane.getCapacity())
-                    if (flight.getStartAirport().equals(airplane.getBase()))
-                        pheromonMap.put(new Edge(airplane, flight),1.0);
-
-            }
-        }
-
-        for (Flight startFlight : FlightService.getInstance().getAllFlights()) {
-            for (Flight endFlight : FlightService.getInstance().getAllFlights()) {
-                if (startFlight.getEndAirport().equals(endFlight.getStartAirport()))
-                    pheromonMap.put(new Edge(startFlight, endFlight), 1.0);
             }
         }
     }
+
+    private void addFlightToAirplaneEdges() {
+        for (AirPlane endAirplane : AirplaneService.getInstance().getAllAirplanes()) {
+            Node end = endAirplane;
+            for (Flight flight : FlightService.getInstance().getAllFlights()) {
+                Node start = flight;
+                NodeNeighborhood neighborhood= neighborhoodMap.get(start);
+                if (neighborhood == null) {
+                    neighborhood = new NodeNeighborhood(start);
+                    neighborhoodMap.put(start, neighborhood);
+                }
+                neighborhood.put(new Edge(start, end),1.0);
+            }
+        }
+    }
+
+    private void addAirplaneToFlightEdges() {
+        for (AirPlane airplane : AirplaneService.getInstance().getAllAirplanes()) {
+            for (Flight flight : FlightService.getInstance().getAllFlights()) {
+                ;if (flight.getNumbuerOfPassnger() <= airplane.getCapacity())
+                    if (flight.getStartAirport().equals(airplane.getBase())) {
+                        NodeNeighborhood neighborhood= neighborhoodMap.get(airplane);
+                        if (neighborhood == null) {
+                            neighborhood = new NodeNeighborhood(airplane);
+                            neighborhoodMap.put(airplane, neighborhood);
+                        }
+                        neighborhood.put(new Edge(airplane, flight),1.0);
+                    }
+            }
+        }
+    }
+
+    private void addFlightToFlightEdges() {
+        for (Flight startFlight : FlightService.getInstance().getAllFlights()) {
+            for (Flight endFlight : FlightService.getInstance().getAllFlights()) {
+                if (startFlight.getEndAirport().equals(endFlight.getStartAirport())) {
+                    NodeNeighborhood neighborhood= neighborhoodMap.get(startFlight);
+                    if (neighborhood == null) {
+                        neighborhood = new NodeNeighborhood(startFlight);
+                        neighborhoodMap.put(startFlight, neighborhood);
+                    }
+                    neighborhood.put(new Edge(startFlight, endFlight), 1.0);
+                }
+
+            }
+        }
+    }
+
+
 
 }

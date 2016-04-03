@@ -1,6 +1,5 @@
 package alg.model;
 
-import generators.ConfigReader;
 import model.AirPlane;
 import model.Flight;
 import model.Node;
@@ -12,7 +11,6 @@ import java.util.*;
  * Created by patrykks on 27/03/16.
  */
 public class Ant {
-    private static final double ACO_CONSTANCE = ConfigReader.getInstance().getAcoConstance();
     public static final long HOUR = 3600*1000;
     private Solution actualSolution;
     private Set<Flight> visitedFlights;
@@ -28,7 +26,7 @@ public class Ant {
         visitedFlights = new HashSet<Flight>();
     }
 
-    public void findSolution() {
+    public Solution findSolution() {
         Edge startEdge = findStartEdge();
         actualSolution.addEdge(startEdge);
         AirPlane airplane = (AirPlane) startEdge.getNodeStart();
@@ -38,12 +36,15 @@ public class Ant {
         Edge lastEdge = null;
         boolean findNode = false;
         while(!toVisitAirplanes.isEmpty()) {
+            //System.out.println("Visited: " + visitedAirplanes);
+            //System.out.println("ToVisit: " + toVisitAirplanes);
             //System.out.println(toVisitAirplanes.size());
+            //System.out.println(lastEdge);
             //System.out.println(toVisitAirplanes);
             //System.out.println(actualSolution);
             findNode = false;
             lastEdge = null;
-            for (Edge edge : aco.getEdges()) {
+            for (Edge edge : aco.getEdges(lastNode)) {
                 if (edge.getNodeStart().equals(lastNode)) {
                     if (Flight.class.isInstance(edge.getNodeEnd())) {
                         Flight flight = (Flight) edge.getNodeEnd();
@@ -62,11 +63,13 @@ public class Ant {
                 }
             }
             if (!findNode) {
-                for (Edge edge : aco.getEdges()) {
+                for (Edge edge : aco.getEdges(lastNode)) {
                     if (edge.getNodeStart().equals(lastNode)) {
                         if (AirPlane.class.isInstance(edge.getNodeEnd())) {
                             airplane = (AirPlane) edge.getNodeEnd();
+                            //System.out.println(airplane);
                             if (!visitedAirplanes.contains(airplane)) {
+                                //System.out.println(edge);
                                 lastEdge = edge;
                                 double pheromoneValueForEdge =  aco.getPheromoneValue(edge)/aco.getPhoromesSumValue(lastNode);
                                 if (Double.compare(Math.random(), pheromoneValueForEdge ) < 0) {
@@ -96,23 +99,15 @@ public class Ant {
 
         }
         updateflightTime();
+        return actualSolution;
     }
 
     private Edge findStartEdge(){
-        for (Edge edge : aco.getEdges()) {
+        for (Edge edge : aco.getAllEdges()) {
             if (AirPlane.class.isInstance(edge.getNodeStart()) && Flight.class.isInstance(edge.getNodeEnd()))
                 return edge;
         }
         throw new RuntimeException("In graph should be at least one edge airplane->flight");
-    }
-
-
-    public double evaluateSolutionCost() {
-        return actualSolution.evaluateSolutionCost();
-    }
-
-    public Solution getSolution() {
-        return actualSolution;
     }
 
     public void clearSolution() {
@@ -121,14 +116,6 @@ public class Ant {
         visitedFlights.clear();
         toVisitAirplanes.clear();
         toVisitAirplanes = new HashSet<AirPlane>(AirplaneService.getInstance().getAllAirplanes());
-    }
-
-    public void updatePheromones() {
-        for (Edge edge : actualSolution.getEdges()) {
-            //System.out.println("ACO_CONSTANCE " + ACO_CONSTANCE);
-            //System.out.println("SOLUTION_COST " + evaluateSolutionCost());
-            aco.updateEdgePheromon(edge, ACO_CONSTANCE / evaluateSolutionCost());
-        }
     }
 
     private void updateflightTime() {
