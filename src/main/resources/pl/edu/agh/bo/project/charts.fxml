@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.edu.agh.bo.project.controller.ChartTabController">
+   <children>
+          <SplitPane dividerPositions="0.5" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <items>
+          <AnchorPane maxWidth="65.0" minHeight="0.0" minWidth="65.0">
+               <children>
+                  <VBox layoutX="46.0" layoutY="64.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <Button fx:id="startButton" mnemonicParsing="false" onAction="#handleStartButtonAction" prefHeight="25.0" prefWidth="65.0" text="Start" VBox.vgrow="ALWAYS" />
+                        <Button fx:id="stopButton" mnemonicParsing="false" onAction="#handleStopButtonAction" prefHeight="25.0" prefWidth="65.0" text="Stop" VBox.vgrow="ALWAYS" />
+                     </children>
+                  </VBox>
+               </children>
+            </AnchorPane>
+          <Pane fx:id="chartPane" />
+        </items>
+      </SplitPane>
+   </children>
+</AnchorPane>

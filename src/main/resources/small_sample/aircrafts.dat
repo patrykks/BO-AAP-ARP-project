@@ -1,0 +1,15 @@
+AirplaneId,AirplaneName,AirplaneConfiguration,BaseAirPort
+SP-LLE,Boeing 737-45D,CY162,1
+SP-LLF,Boeing 737-45D,CY162,2
+SP-LLG,Boeing 737-45D,CY162,3
+SP-LRA,Boeing 787-8 Dreamliner,C18W21Y213,4
+SP-LRB,Boeing 787-8 Dreamliner,C18W21Y213,5
+SP-LRC,Boeing 787-8 Dreamliner,C18W21Y213,6
+SP-LRD,Boeing 787-8 Dreamliner,C18W21Y213,7
+SP-LRE,Boeing 787-8 Dreamliner,C18W21Y213,1
+SP-LSE,Boeing 787-8 Dreamliner,C18W21Y213,9
+SP-EQB,De Havilland Canada DHC-8-402Q Dash 8,Y078,10
+SP-EQC,De Havilland Canada DHC-8-402Q Dash 8,Y078,11
+SP-EQD,De Havilland Canada DHC-8-402Q Dash 8,Y078,12
+SP-EQE,De Havilland Canada DHC-8-402Q Dash 8,Y078,1
+SP-EQF,De Havilland Canada DHC-8-402Q Dash 8,Y078,8

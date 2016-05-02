@@ -28,6 +28,10 @@ public class Flight extends Node {
         this.realdDepTIme = null;
     }
 
+    public int getId() {
+        return id;
+    }
+
     public int getCancelledFlightPenalty() {
         return cancelledFlightPenalty;
     }

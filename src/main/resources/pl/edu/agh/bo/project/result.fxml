@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.collections.*?>
+<?import javafx.geometry.Insets?>
+<?import java.lang.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.control.cell.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.edu.agh.bo.project.controller.TableViewController">
+   <children>
+
+      <TableView fx:id="tableView" layoutX="-8.0" layoutY="-6.0" prefHeight="406.0" prefWidth="1480.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" GridPane.columnIndex="0" GridPane.rowIndex="1">
+         <columns>
+            <TableColumn fx:id="flightIdColumn" prefWidth="100" text="flightId"> </TableColumn>
+            <TableColumn fx:id="airplaneIdColumn" prefWidth="300" text="airplaneId"> </TableColumn>
+            <TableColumn fx:id="startAirportColumn" prefWidth="200" text="startAirport"> </TableColumn>
+            <TableColumn fx:id="endAirportColumn" prefWidth="200" text="endAirport"> </TableColumn>
+            <TableColumn fx:id="plannedDepTimeColumn" prefWidth="300" text="plannedDepTIme"> </TableColumn>
+            <TableColumn fx:id="realdDepTimeColumn" prefWidth="300" text="realdDepTime"> </TableColumn>
+            <TableColumn fx:id="numbuerOfPassngerColumn" prefWidth="100" text="numbuerOfPassnger"> </TableColumn>
+            <TableColumn fx:id="flightdelayPenealtyColumn" prefWidth="100" text="flightdelayPenealty"> </TableColumn>
+            <TableColumn fx:id="cancelledFlightPenaltyColumn" prefWidth="100" text="cancelledFlightPenalty"> </TableColumn>
+         </columns>
+
+      </TableView>
+   </children>
+</AnchorPane>

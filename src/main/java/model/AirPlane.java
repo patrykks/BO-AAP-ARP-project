@@ -24,6 +24,14 @@ public class AirPlane extends Node {
         this.costOfUnitOfTime = costOfUnitOfTime;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
     public AirPort getBase() {
         return base;
     }

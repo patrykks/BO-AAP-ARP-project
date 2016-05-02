@@ -6,6 +6,8 @@ import model.Flight;
 import model.Node;
 import services.AirplaneService;
 import services.FlightService;
+import services.FlightTableService;
+import services.StatsService;
 
 import java.util.*;
 
@@ -31,15 +33,21 @@ public class Aco {
     }
 
     public void solve() {
+        int iteration = 0;
+        long startTime = System.currentTimeMillis();
         while (true) {
-            System.out.println("Actual min cost" + minCost);
+            iteration++;
+            //System.out.println("Actual min cost" + minCost);
             //System.out.println(bestSolution);
             for (Ant ant : ants) {
                 Solution solution = ant.findSolution();
                 double solutionCost = solution.evaluateSolutionCost();
                 if (Double.compare(solutionCost, minCost) < 0) {
+                    double estimatedTime = (System.currentTimeMillis() - startTime) / 1000.0;
+                    StatsService.getInstance().addStatsItem(estimatedTime, minCost, iteration );
                     minCost = solutionCost;
                     bestSolution = solution.cloneSolution();
+                    updateFlightTable();
                 }
                 updatePheromones(solution, solutionCost);
                 ant.clearSolution();
@@ -57,11 +65,15 @@ public class Aco {
     }
 
     public double getPheromoneValue(Edge edge) {
-            return neighborhoodMap.get(edge.getNodeStart()).get(edge);
+        return neighborhoodMap.get(edge.getNodeStart()).get(edge);
     }
 
     public Set<Edge> getEdges(Node node) {
         return neighborhoodMap.get(node).getEdges();
+    }
+
+    public double getMinCost() {
+        return minCost;
     }
 
     public Set<Edge> getAllEdges() {
@@ -80,6 +92,10 @@ public class Aco {
         return sum;
     }
 
+    public Solution getBestSolution() {
+        return bestSolution;
+    }
+
     public void updateEdgePheromon(Edge edge,double value) {
         neighborhoodMap.get(edge.getNodeStart()).put(edge, value);
     }
@@ -87,6 +103,29 @@ public class Aco {
     public void updatePheromones(Solution antSolution, double solutionCost) {
         for (Edge edge : antSolution.getEdges()) {
             updateEdgePheromon(edge, ACO_CONSTANCE / solutionCost);
+        }
+    }
+
+    private void updateFlightTable() {
+        FlightTableService.getInstance().clear();
+        AirPlane actualAirplane = null;
+        for (Edge edge : bestSolution.getEdges()) {
+            Node start = edge.getNodeStart();
+            Node end = edge.getNodeEnd();
+            if (AirPlane.class.isInstance(start)) {
+                actualAirplane = (AirPlane) start;
+            }
+            if (Flight.class.isInstance(start)) {
+                Flight flight = (Flight) start;
+                FlightTableService.getInstance().updateFlightItem(flight.getId(), flight.getRealdDepTIme(), actualAirplane);
+            }
+            if (AirPlane.class.isInstance(end)) {
+                actualAirplane = (AirPlane) end;
+            }
+            if (Flight.class.isInstance(end)) {
+                Flight flight = (Flight) end;
+                FlightTableService.getInstance().updateFlightItem(flight.getId(), flight.getRealdDepTIme(), actualAirplane);
+            }
         }
     }
 

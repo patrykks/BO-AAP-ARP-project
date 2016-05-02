@@ -44,6 +44,10 @@ public class AirPort {
         return (dist);
     }
 
+    public String getName() {
+        return "IATA: " + IATA + " ICAO:" + ICAO;
+    }
+
     private double deg2rad(double deg) {
         return (deg * Math.PI / 180.0);
     }
