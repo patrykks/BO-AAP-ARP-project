@@ -6,8 +6,10 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import pl.edu.agh.bo.project.model.Chart;
+import services.StatsService;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -21,6 +23,8 @@ public class ChartTabController {
     private ExecutorService executor;
     private boolean shouldBreak;
 
+    @FXML
+    TextField alphaCoefficient;
 
     @FXML
     Button startButton;
@@ -52,6 +56,7 @@ public class ChartTabController {
                 chart.getLineChart().setPrefSize(chartPane.getWidth(), chartPane.getHeight());
             }
         });
+        StatsService.getInstance().addAlphaCoefficientProperty(alphaCoefficient.textProperty());
 
     }
 

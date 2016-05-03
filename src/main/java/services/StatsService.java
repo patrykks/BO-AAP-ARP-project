@@ -1,5 +1,11 @@
 package services;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.StringProperty;
+import javafx.util.StringConverter;
+import javafx.util.converter.NumberStringConverter;
 import model.StatsItem;
 
 import java.util.ArrayList;
@@ -12,6 +18,7 @@ public class StatsService {
     private static StatsService instance;
     private ArrayList<StatsItem> items;
     private int idGenerator;
+    private DoubleProperty alphaCoefficient;
 
     private StatsService(){
         initialize();
@@ -53,6 +60,16 @@ public class StatsService {
                 return statsItem;
         }
         return null;
+    }
+
+    public DoubleProperty getAlphaCoefficient() {
+        return alphaCoefficient;
+    }
+
+    public void addAlphaCoefficientProperty(StringProperty stringProperty) {
+        StringConverter<Number> converter = new NumberStringConverter();
+        alphaCoefficient = new SimpleDoubleProperty(0.0);
+        Bindings.bindBidirectional(stringProperty,alphaCoefficient, converter);
     }
 
 

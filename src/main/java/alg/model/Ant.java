@@ -1,9 +1,11 @@
 package alg.model;
 
+import javafx.beans.property.DoubleProperty;
 import model.AirPlane;
 import model.Flight;
 import model.Node;
 import services.AirplaneService;
+import services.StatsService;
 
 import java.util.*;
 
@@ -17,6 +19,7 @@ public class Ant {
     private Set<AirPlane> toVisitAirplanes;
     private Set<AirPlane> visitedAirplanes;
     private Aco aco;
+    private DoubleProperty alphaCoefficient = StatsService.getInstance().getAlphaCoefficient();
 
     public Ant(Aco aco) {
         this.aco = aco;
@@ -35,6 +38,8 @@ public class Ant {
         Node lastNode = startEdge.getNodeEnd();
         Edge lastEdge = null;
         boolean findNode = false;
+        Double alhpa = alphaCoefficient.doubleValue();
+        if (alhpa == null) alhpa = 1.0;
         while(!toVisitAirplanes.isEmpty()) {
             findNode = false;
             lastEdge = null;
@@ -43,7 +48,7 @@ public class Ant {
                     if (Flight.class.isInstance(edge.getNodeEnd())) {
                         Flight flight = (Flight) edge.getNodeEnd();
                         if (!visitedFlights.contains(flight)) {
-                            double pheromoneValueForEdge =  aco.getPheromoneValue(edge)/aco.getPhoromesSumValue(lastNode);
+                            double pheromoneValueForEdge =  Math.pow(aco.getPheromoneValue(edge), alhpa)/aco.getPhoromesSumValue(lastNode, alhpa);
                             //System.out.println("Pheromone value for edge" + pheromoneValueForEdge);
                             if (Double.compare(Math.random(), pheromoneValueForEdge ) < 0) {
                                 lastNode = flight;
@@ -63,7 +68,7 @@ public class Ant {
                             airplane = (AirPlane) edge.getNodeEnd();
                             if (!visitedAirplanes.contains(airplane)) {
                                 lastEdge = edge;
-                                double pheromoneValueForEdge =  aco.getPheromoneValue(edge)/aco.getPhoromesSumValue(lastNode);
+                                double pheromoneValueForEdge =  Math.pow(aco.getPheromoneValue(edge), alhpa) /aco.getPhoromesSumValue(lastNode, alhpa);
                                 if (Double.compare(Math.random(), pheromoneValueForEdge ) < 0) {
                                     lastNode = airplane;
                                     findNode = true;

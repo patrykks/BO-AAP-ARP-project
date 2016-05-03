@@ -14,6 +14,8 @@
                      <children>
                         <Button fx:id="startButton" mnemonicParsing="false" onAction="#handleStartButtonAction" prefHeight="25.0" prefWidth="65.0" text="Start" VBox.vgrow="ALWAYS" />
                         <Button fx:id="stopButton" mnemonicParsing="false" onAction="#handleStopButtonAction" prefHeight="25.0" prefWidth="65.0" text="Stop" VBox.vgrow="ALWAYS" />
+                        <Label prefHeight="25.0" prefWidth="65.0" textAlignment="CENTER" text="alpha" VBox.vgrow="ALWAYS" />
+                        <TextField fx:id="alphaCoefficient" prefHeight="25.0" prefWidth="65.0" text="1.0" VBox.vgrow="ALWAYS" />
                      </children>
                   </VBox>
                </children>

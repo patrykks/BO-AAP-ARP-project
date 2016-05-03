@@ -22,7 +22,6 @@ public class Aco {
     private Solution bestSolution = null;
     private Map <Node, NodeNeighborhood> neighborhoodMap;
 
-
     public Aco(int antsNumber) {
         neighborhoodMap = new HashMap<Node, NodeNeighborhood>();
         initializeEgdeMap();
@@ -84,10 +83,10 @@ public class Aco {
         return edgeSet;
     }
 
-    public double getPhoromesSumValue(Node node) {
+    public double getPhoromesSumValue(Node node,Double alpha) {
         double sum = 0.0;
         for (Double value : neighborhoodMap.get(node).values()) {
-            sum += value;
+            sum += Math.pow(value, alpha);
         }
         return sum;
     }
