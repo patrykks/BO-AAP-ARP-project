@@ -10,7 +10,7 @@
         <tabs>
           <Tab closable="false" text="Chart">
                <content>
-                  <fx:include source="charts.fxml" />
+                  <fx:include fx:id="chartTab" source="charts.fxml" />
                </content>
           </Tab>
           <Tab fx:id="tabResult" closable="false" text="Result" >

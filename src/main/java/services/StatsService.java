@@ -43,7 +43,7 @@ public class StatsService {
         if (beforeStatsItem == null) {
             procentageImprovment = 100;
         } else {
-            procentageImprovment =  (beforeStatsItem.getMincost() - minCost) / (beforeStatsItem.getMincost());
+            procentageImprovment =  (beforeStatsItem.getMincost() - minCost) / (minCost);
             procentageImprovment*= 100;
         }
         StatsItem item = new StatsItem(idGenerator++, minCost, time, procentageImprovment, iteration);
@@ -68,7 +68,7 @@ public class StatsService {
 
     public void addAlphaCoefficientProperty(StringProperty stringProperty) {
         StringConverter<Number> converter = new NumberStringConverter();
-        alphaCoefficient = new SimpleDoubleProperty(0.0);
+        alphaCoefficient = new SimpleDoubleProperty(1.0);
         Bindings.bindBidirectional(stringProperty,alphaCoefficient, converter);
     }
 

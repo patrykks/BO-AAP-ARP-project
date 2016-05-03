@@ -41,10 +41,10 @@ public class Aco {
             for (Ant ant : ants) {
                 Solution solution = ant.findSolution();
                 double solutionCost = solution.evaluateSolutionCost();
-                if (Double.compare(solutionCost, minCost) < 0) {
+                if (Double.compare(solutionCost, getMinCost()) < 0) {
                     double estimatedTime = (System.currentTimeMillis() - startTime) / 1000.0;
-                    StatsService.getInstance().addStatsItem(estimatedTime, minCost, iteration );
-                    minCost = solutionCost;
+                    StatsService.getInstance().addStatsItem(estimatedTime, getMinCost(), iteration );
+                    setMinCost(solutionCost);
                     bestSolution = solution.cloneSolution();
                     updateFlightTable();
                 }
@@ -71,9 +71,11 @@ public class Aco {
         return neighborhoodMap.get(node).getEdges();
     }
 
-    public double getMinCost() {
+    public synchronized double getMinCost() {
         return minCost;
     }
+
+    public synchronized void setMinCost(double minCost) { this.minCost = minCost;}
 
     public Set<Edge> getAllEdges() {
         Set<Edge> edgeSet = new HashSet<Edge>();
