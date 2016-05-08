@@ -107,6 +107,37 @@ public class Solution  {
         return solution;
     }
 
+    public Flight getLastFlight() {
+        ListIterator<Edge> li = edges.listIterator(edges.size());
+        while(li.hasPrevious()) {
+            Edge edge = li.previous();
+            if (Flight.class.isInstance(edge.getNodeEnd()))
+                return (Flight) edge.getNodeEnd();
+            if (Flight.class.isInstance(edge.getNodeStart()))
+                return (Flight) edge.getNodeStart();
+
+        }
+        return null;
+    }
+
+    public AirPlane getLastAirplane() {
+        ListIterator<Edge> li = edges.listIterator(edges.size());
+        boolean foundLast = false;
+        while(li.hasPrevious()) {
+            Edge edge = li.previous();
+            if (AirPlane.class.isInstance(edge.getNodeEnd()))
+                if (foundLast)
+                    return (AirPlane) edge.getNodeEnd();
+                else
+                    foundLast = true;
+            if (AirPlane.class.isInstance(edge.getNodeStart()))
+                if (foundLast)
+                    return (AirPlane) edge.getNodeStart();
+                else
+                    foundLast = true;
+        }
+        return null;
+    }
 
     @Override
     public String toString() {

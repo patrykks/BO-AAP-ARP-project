@@ -4,6 +4,7 @@ import javafx.beans.property.DoubleProperty;
 import model.AirPlane;
 import model.Flight;
 import model.Node;
+import model.SimulationStep;
 import services.AirplaneService;
 import services.StatsService;
 
@@ -54,6 +55,10 @@ public class Ant {
                                 lastNode = flight;
                                 findNode = true;
                                 visitedFlights.add(flight);
+                                if (actualSolution.getLastAirplane() != null && actualSolution.getLastFlight() != null)
+                                    synchronized (StatsService.getInstance()) {
+                                        StatsService.getInstance().setSimulationStep(new SimulationStep(flight, airplane, actualSolution.getLastFlight(), actualSolution.getLastAirplane()));
+                                    }
                                 actualSolution.addEdge(edge);
                                 break;
                             }

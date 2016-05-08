@@ -1,16 +1,16 @@
 package pl.edu.agh.bo.project.controller;
 
 import javafx.animation.PathTransition;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.LineTo;
@@ -19,8 +19,10 @@ import javafx.scene.shape.Path;
 import javafx.util.Duration;
 import model.AirPlane;
 import model.Flight;
+import model.SimulationStep;
 import services.AirplaneService;
 import services.FlightService;
+import services.StatsService;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,12 +35,14 @@ import java.util.concurrent.Executors;
  */
 public class SimulationController {
     @FXML
-    private ScrollPane simulationScrollPane;
+    private Pane simulationPane;
+
+    private Group group = new Group();
 
     private Map<Flight,Map<AirPlane,ImageView>> positions = new HashMap<Flight,Map<AirPlane,ImageView>>();
     private ExecutorService executor;
     private Image antImage = new Image("ant.png");
-    private StackPane holder = new StackPane();
+
     private int i =0;
     @FXML
     private void initialize() {
@@ -52,7 +56,6 @@ public class SimulationController {
 
 
         VBox vbox = new VBox(30);
-        vbox.setAlignment(Pos.CENTER);
 
         Button btn = new Button("Action");
         vbox.getChildren().add(btn);
@@ -60,10 +63,27 @@ public class SimulationController {
         btn.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
-            public void handle(ActionEvent e) {
-                makeAnimation();
+            public void handle(ActionEvent event) {
+                executor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        while (true) {
+                            SimulationStep simulationStep = null;
+                            simulationStep = StatsService.getInstance().getSimulationStep();
+                            if (simulationStep != null)
+                                makeSimulationStep(simulationStep);
+                            try {
+                                Thread.sleep(100);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                });
+
             }
         });
+
         // simple displays ImageView the image as is
         for (Flight flight : FlightService.getInstance().getAllFlights()) {
 
@@ -76,39 +96,116 @@ public class SimulationController {
                 iv1.setFitWidth(25);
                 iv1.setFitHeight(25);
                 hbox.getChildren().add(iv1);
+                PathTransition pathTransition = createNewPathTransition();
 
                 positions.get(flight).put(airPlane, iv1);
 
             }
-            hbox.setAlignment(Pos.CENTER);
             vbox.getChildren().add(hbox);
 
 
         }
 
-        simulationScrollPane.setFitToHeight(true);
-        simulationScrollPane.setFitToWidth(true);
-        holder.getChildren().add(vbox);
-        simulationScrollPane.setContent(holder);
+       // simulationScrollPane.setFitToHeight(true);
+       // simulationScrollPane.setFitToWidth(true);
+        simulationPane.getChildren().add(vbox);
+
 
 
 
     }
 
-    private void makeAnimation() {
-        System.out.println(holder.getLayoutBounds());
+    public double getAirplaneFlightX(AirPlane airPlane, Flight flight) {
+        ImageView imageView = positions.get(flight).get(airPlane);
+        return  imageView.getLayoutX() -imageView.getParent().getLayoutX() + 12.5;
+    }
 
+    public double getAirplaneFlightY(AirPlane airPlane, Flight flight) {
+        ImageView imageView = positions.get(flight).get(airPlane);
+        return  imageView.getParent().getLayoutY() + 12.5;
+    }
+
+    private void makeSimulationStep(SimulationStep simulationStep) {
+        ImageView iv1 = new ImageView();
+        iv1.setImage(antImage);
+
+        iv1.setFitWidth(15);
+        iv1.setFitHeight(15);
+        Path path = new Path();
+
+        path.getElements().addAll(new MoveTo(getAirplaneFlightX(simulationStep.getAirPlaneFrom(), simulationStep.getFlightFrom()), getAirplaneFlightY(simulationStep.getAirPlaneFrom(), simulationStep.getFlightFrom())));
+        path.getElements().addAll(new LineTo(getAirplaneFlightX(simulationStep.getAirPlaneTo(), simulationStep.getFlightTo()), getAirplaneFlightY(simulationStep.getAirPlaneTo(), simulationStep.getFlightTo()) ));
+        path.setStrokeWidth(1);
+        path.setStroke(Color.TRANSPARENT);
+
+        PathTransition pt = new PathTransition();
+        pt.setNode(iv1);
+        pt.setPath(path);
+        pt.setDuration(Duration.millis(16000));
+        pt.setOrientation(PathTransition.OrientationType.ORTHOGONAL_TO_TANGENT);
+        pt.setCycleCount(1);
+
+
+
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                //System.out.println("Run later task " + simulationStep);
+                //System.out.println(path.toString());
+                simulationPane.getChildren().add(iv1);
+                simulationPane.getChildren().add(path);
+                simulationPane.setVisible(false);
+                simulationPane.setVisible(true);
+                pt.play();
+                simulationPane.setVisible(false);
+                simulationPane.setVisible(true);
+            }
+        });
+
+
+
+
+    }
+
+    public PathTransition createNewPathTransition() {
+        ImageView iv1 = new ImageView();
+        iv1.setImage(antImage);
+
+        iv1.setFitWidth(15);
+        iv1.setFitHeight(15);
+        Path path = new Path();
+
+        path.setStrokeWidth(1);
+        path.setStroke(Color.TRANSPARENT);
+
+        PathTransition pt = new PathTransition();
+        pt.setNode(iv1);
+        pt.setPath(path);
+        pt.setDuration(Duration.millis(16000));
+        pt.setOrientation(PathTransition.OrientationType.ORTHOGONAL_TO_TANGENT);
+        pt.setCycleCount(1);
+        pt.setOnFinished(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent arg0) {
+                path.getElements().clear();
+                iv1.setImage(null);
+                System.gc();
+            }
+        });
+
+        simulationPane.getChildren().add(iv1);
+        simulationPane.getChildren().add(path);
+
+
+        return pt;
+    }
+
+    private void makeAnimation() {
+        double x = getAirplaneFlightX(AirplaneService.getInstance().getAllAirplanes().get(i%14), FlightService.getInstance().getAllFlights().get(i % 24));
+        double y= getAirplaneFlightY(AirplaneService.getInstance().getAllAirplanes().get(i%14), FlightService.getInstance().getAllFlights().get(i % 24));
         i++;
-        ImageView imageView = positions.get(FlightService.getInstance().getAllFlights().get(i % 25)).get(AirplaneService.getInstance().getAllAirplanes().get(0));
-        double x = imageView.getX() - imageView.getBoundsInParent().getMinX();
-        double y= imageView.getY();
-        System.out.println(imageView.getX());
-        System.out.println(imageView.getY());
-        System.out.println(imageView.getLayoutX());
-        System.out.println(imageView.getLayoutY());
-        System.out.println(imageView.getBoundsInLocal());
-        System.out.println(imageView.getBoundsInParent());
-        System.out.println(imageView.getLayoutBounds());
+
 
         ImageView iv1 = new ImageView();
         iv1.setImage(antImage);
@@ -118,7 +215,8 @@ public class SimulationController {
         Path path = new Path();
 
         path.getElements().addAll(new MoveTo(x, y));
-        path.getElements().addAll(new LineTo(x + 50, y + 50));
+        path.getElements().addAll(new LineTo(x + 25, y + 55));
+
 
 
         path.setStrokeWidth(1);
@@ -131,10 +229,12 @@ public class SimulationController {
         pt.setOrientation(PathTransition.OrientationType.ORTHOGONAL_TO_TANGENT);
         pt.setCycleCount(1);
 
-        holder.getChildren().add(iv1);
-        holder.getChildren().add(path);
+        simulationPane.getChildren().add(iv1);
+        simulationPane.getChildren().add(path);
 
         pt.play();
+
+
     }
 
 

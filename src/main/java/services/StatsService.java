@@ -6,6 +6,7 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.StringProperty;
 import javafx.util.StringConverter;
 import javafx.util.converter.NumberStringConverter;
+import model.SimulationStep;
 import model.StatsItem;
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ public class StatsService {
     private ArrayList<StatsItem> items;
     private int idGenerator;
     private DoubleProperty alphaCoefficient;
+    private SimulationStep simulationStep;
 
     private StatsService(){
         initialize();
@@ -72,5 +74,11 @@ public class StatsService {
         Bindings.bindBidirectional(stringProperty,alphaCoefficient, converter);
     }
 
+    public synchronized SimulationStep getSimulationStep() {
+        return simulationStep;
+    }
 
+    public synchronized void setSimulationStep(SimulationStep simulationStep) {
+        this.simulationStep = simulationStep;
+    }
 }

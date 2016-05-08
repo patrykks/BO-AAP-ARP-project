@@ -9,5 +9,6 @@
 <?import javafx.scene.control.cell.*?>
 <?import javafx.scene.layout.*?>
 
-<ScrollPane fx:id="simulationScrollPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.edu.agh.bo.project.controller.SimulationController">
-</ScrollPane>
+
+<Pane fx:id="simulationPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.edu.agh.bo.project.controller.SimulationController">
+</Pane>
